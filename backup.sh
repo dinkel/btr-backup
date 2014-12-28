@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 PROJECT_ROOT="$BACKUP_ROOT/$BACKUP_PROJECT"
 
 CURRENT_SUBVOL="$PROJECT_ROOT/current"
@@ -136,8 +138,8 @@ check
 init
 
 for file in backup.d/*; do
-    if [ -f "$file" ]; then
-        source "$file"
+    if [ -f "$file" -a -x "$file" ]; then
+        ./"$file"
     fi
 done
 
