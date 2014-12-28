@@ -140,8 +140,8 @@ init
 DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 for file in $DIR/backup.d/*; do
-    if [ -f "$file" -a -x "$file" ]; then
-        "$file"
+    if [ -f "$file" ]; then
+        . "$file"
     fi
 done
 
