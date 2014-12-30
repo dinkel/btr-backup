@@ -16,7 +16,7 @@ Btrfs snapshot. This is however not a requirement.
 
 The script has a cleanup functionality, that ensures that the latest 12
 snapshots are kept, plus one snapshot in each of the last 12 days, plus one
-eack month in the last year and finally one snapshot every year.
+each month in the last year and finally one snapshot every year.
 
 Usage
 -----
@@ -67,6 +67,33 @@ these paths are `rsync`ed to the backup medium.
 Example:
 
     $ export BACKUP_FILES_PATHS=/var/www/data:/var/www/config
+
+### BACKUP_MYSQL_HOST (optional)
+
+If set, the script uses `mysqldump --all-databases` to create a full MySQL
+database dump. Note that it does not fall back to `localhost` by default,
+because this option also acts a trigger for the MySQL backup procedure.
+
+Example:
+
+    $ export BACKUP_MYSQL_HOST=localhost
+
+### BACKUP_MYSQL_USER (optional, default "root")
+
+This defines the user which reads the PostgreSQL database for dumping.
+
+Example:
+
+    $ export BACKUP_MYSQL_USER=admin
+
+### BACKUP_MYSQL_PASSWORD (optional, default "")
+
+This defines the password for the aforementioned `BACKUP_MYSQL_USER`. It
+defaults to no password.
+
+Example:
+
+    $ export BACKUP_MYSQL_PASSWORD=mysecretpassword
 
 ### BACKUP_POSTGRESQL_HOST (optional)
 
