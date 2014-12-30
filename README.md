@@ -8,8 +8,8 @@ simple yet reliable soluting to backup my Docker containers. I started with
 writing a few lines of code to create a "Docker backup image" and shortly after
 realized, that these scripts can easily be run standalone.
 
-In a short while I'll link to the yet to be created Docker image that uses these
-scripts in a dockerized manner with more documentation.
+A Docker image using there scripts can be found
+[here](https://registry.hub.docker.com/u/dinkel/backup/).
 
 Normal usage would be to start a backup job every hour, which all create a new
 Btrfs snapshot. This is however not a requirement.
