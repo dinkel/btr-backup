@@ -122,6 +122,80 @@ Example:
 
     $ export BACKUP_POSTGRESQL_PASSWORD=mysecretpassword
 
+### BACKUP_OPENLDAP_HOST (optional)
+
+If set, the script uses `ldapsearch` to create a full OpenLDAP database dump.
+In order to use remote backups (like it is done with the databases), the
+`ldapsearch` script is used instead of the local-only `slapcat`. There is a
+nasty problem when using `ldapsearch`, that is a possible limit on number of
+results returned set by the server (please make sure, this is not a problem for
+you).
+
+Example:
+
+    $ export BACKUP_OPENLDAP_HOST=localhost
+
+### BACKUP_OPENLDAP_DOMAIN (optional)
+
+If set, this domain is transformed to the base DN that is to be backed up.
+
+Example:
+
+    $ export BACKUP_OPENLDAP_DOMAIN=ldap.example.org
+
+This would create the base distinguished name of `dc=ldap,dc=example,dc=org`.
+
+### BACKUP_OPENLDAP_USER (optional, default "admin")
+
+This defines the user which reads the OpenLDAP database for data dumping.
+
+Example:
+
+    $ export BACKUP_OPENLDAP_USER=backup_user
+
+Together with the `BACKUP_OPENLDAP_DOMAIN` this would create the `-D` (bind DN)
+of `cn=backup_user,dc=ldap,dc=example,dc=org`.
+
+### BACKUP_OPENLDAP_PASSWORD (optional, default "")
+
+This defines the password for the aforementioned `BACKUP_OPENLDAP_USER`. It
+defaults to no password.
+
+Example:
+
+    $ export BACKUP_OPENLDAP_PASSWORD=mysecretpassword
+
+### BACKUP_OPENLDAP_CONFIG (optional)
+
+OpenLDAP allows (and it is the default nowadays), that the configuration is
+saved in the LDAP directory structure as well in order to allow interrupt-free
+configuration changes. These configurations are all saven in the `cn=config`
+tree and can be backed up if this option is set. Anything goes, something like
+`true`, `1` or `yes` would be considered good choices.
+
+Example:
+
+    $ export BACKUP_OPENLDAP_CONFIG=true
+
+### BACKUP_OPENLDAP_CONFIG_USER (optional, default "admin")
+
+This defines the user which reads the OpenLDAP database for config dumping.
+
+Example:
+
+    $ export BACKUP_OPENLDAP_CONFIG_USER=config_backup_user
+
+This would create the `-D` (bind DN) of `cn=config_backup_user,cn=config`.
+
+### BACKUP_OPENLDAP_CONFIG_PASSWORD (optional, default "")
+
+This defines the password for the aforementioned `BACKUP_OPENLDAP_CONFIG_USER`.
+It defaults to no password.
+
+Example:
+
+    $ export BACKUP_OPENLDAP_CONFIG_PASSWORD=mysecretpassword
+
 Comments / Help / Bugs
 ----------------------
 
