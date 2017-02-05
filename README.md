@@ -42,12 +42,16 @@ Environment variables
 
 ### BACKUP_ROOT (mandatory)
 
-This defines the *local* base directory where the backups are stored. It should
-be a Btrfs filesystem (altough technically only the subdirectories need be).
+This defines the *local* base directory where the backups are stored. Multiple
+roots can be defined by separating the paths by a colon. At least one such 
+root needs to exist and it should be a Btrfs filesystem (altough technically 
+only the subdirectories need be).
 
-Example:
+Examples:
 
     $ export BACKUP_ROOT=/mnt/backup
+    
+    $ export BACKUP_ROOT=/mnt/backup-disk-1:/mnt/backup-disk-2
 
 ### BACKUP_PROJECT (mandatory)
 

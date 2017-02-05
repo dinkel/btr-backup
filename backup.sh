@@ -2,22 +2,13 @@
 
 set -e
 
-PROJECT_ROOT="$BACKUP_ROOT/$BACKUP_PROJECT"
-
-CURRENT_SUBVOL="$PROJECT_ROOT/current"
-
 DATE=`date +'%F_%H:%M'`
 
-SNAPSHOT_SUBVOL="$PROJECT_ROOT/$DATE"
+BACKUP_ROOTS=()
 
-check() {
+config_check() {
     if [[ ! ${BACKUP_ROOT+defined} = defined ]]; then
         echo "[Backup] Mandatory BACKUP_ROOT not set" >&2
-        exit 1
-    fi
-
-    if [ ! -d "$BACKUP_ROOT" ]; then
-        echo "[Backup] Backup root '$BACKUP_ROOT' does not exist" >&2
         exit 1
     fi
 
@@ -26,6 +17,41 @@ check() {
         exit 1
     fi
 
+    IFS=":"; declare -a potential_backup_roots=($BACKUP_ROOT); unset IFS
+
+    for root in "${potential_backup_roots[@]}"; do
+        if [ -d "$root" ]; then
+            BACKUP_ROOTS+=($root)
+        fi
+    done
+    
+    if [ "${#BACKUP_ROOTS[@]}" -lt "1" ]; then
+        echo "[Backup] No existing BACKUP_ROOT set" >&2
+        exit 1
+    fi
+}
+
+run() {
+    for root in "${BACKUP_ROOTS[@]}"; do
+        PROJECT_ROOT="$root/$BACKUP_PROJECT"
+
+        CURRENT_SUBVOL="$PROJECT_ROOT/current"
+
+        SNAPSHOT_SUBVOL="$PROJECT_ROOT/$DATE"
+
+        check
+   
+        init
+
+        run_backup_modules
+    
+        snapshot
+
+        cleanup    
+    done
+}
+
+check() {
     if [ -d "$CURRENT_SUBVOL" ]; then
         if [ `stat --format=%i "$CURRENT_SUBVOL"` != 256 ]; then
             echo "[Backup] Directory '$CURRENT_SUBVOL' needs to be a BTRFS subvolume" >&2
@@ -47,6 +73,16 @@ init() {
     if [ ! -d "$CURRENT_SUBVOL" ]; then
         btrfs subvolume create "$CURRENT_SUBVOL" >/dev/null
     fi
+}
+
+run_backup_modules() {
+    DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+    for file in $DIR/backup.d/*; do
+        if [ -f "$file" ]; then
+            . "$file"
+        fi
+    done
 }
 
 snapshot() {
@@ -133,18 +169,6 @@ cleanup() {
     done
 }
 
-check
+config_check
 
-init
-
-DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-for file in $DIR/backup.d/*; do
-    if [ -f "$file" ]; then
-        . "$file"
-    fi
-done
-
-snapshot
-
-cleanup
+run
