@@ -7,6 +7,8 @@ DATE=`date +'%F_%H:%M'`
 BACKUP_ROOTS=()
 
 config_check() {
+    echo -n "Running config check ... "
+    
     if [[ ! ${BACKUP_ROOT+defined} = defined ]]; then
         echo "[Backup] Mandatory BACKUP_ROOT not set" >&2
         exit 1
@@ -29,10 +31,14 @@ config_check() {
         echo "[Backup] No existing BACKUP_ROOT set" >&2
         exit 1
     fi
+    
+    echo "OK"
 }
 
 run() {
     for root in "${BACKUP_ROOTS[@]}"; do
+        echo -n "Running backup to ${root} ... "
+
         PROJECT_ROOT="$root/$BACKUP_PROJECT"
 
         CURRENT_SUBVOL="$PROJECT_ROOT/current"
@@ -48,6 +54,8 @@ run() {
         snapshot
 
         cleanup    
+        
+        echo "OK"
     done
 }
 
