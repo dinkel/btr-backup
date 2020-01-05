@@ -103,7 +103,7 @@ snapshot() {
 
 cleanup() {
 
-    all_snapshots_raw=(`find "$PROJECT_ROOT" -name '????-??-??_??:??'`)
+    all_snapshots_raw=(`btrfs subvolume list $BACKUP_ROOT | grep "^$BACKUP_PROJECT/[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}_[0-9]\{2\}:[0-9]\{2\}$" | cut -d "/" -f 2`) 
 
     all_snapshots_asc=($(printf '%s\n' "${all_snapshots_raw[@]##*/}" | sort))
     all_snapshots=($(printf '%s\n' "${all_snapshots_raw[@]##*/}" | sort -r))
