@@ -9,9 +9,9 @@ if [[ ${BACKUP_FILES_PATHS+defined} = defined ]]; then
 
     includes=""
 
-    orig_IFS=$IFS
-    IFS=:
-    for path in $BACKUP_FILES_PATHS; do
+    paths=($(echo $BACKUP_FILES_PATHS | tr ":" "\n"))
+    
+    for path in $paths; do
         if [[ "$path" = /* ]]; then
             if [ -d "$path" ]; then
                 includes="--include='${path/%\//}/***' $includes"
@@ -32,7 +32,6 @@ if [[ ${BACKUP_FILES_PATHS+defined} = defined ]]; then
             exit 1
         fi
     done
-    IFS=$orig_IFS
 
     eval "rsync --archive --numeric-ids --inplace --relative --delete --delete-excluded $includes --exclude='*' / $FILES_DESTINATION"
 else
